@@ -31,7 +31,7 @@ border = pygame.Rect(420,0,50,850)
 red_bullet = []
 Yellow_bullet = []
 yellow_hit = pygame.USEREVENT+1
-red_hit = pygame.USEREVENT+1
+red_hit = pygame.USEREVENT+2
 
 
 # Create a border rectangle to separate the two sides
@@ -69,6 +69,7 @@ while running:
     screen.blit(Health_red,(20,20))
     screen.blit(spaceship_red,(0,100))
     screen.blit(spaceship_yellow,(700,100))
+    #
     for e in red_bullet:
         pygame.draw.rect(screen,"red",e)
     
@@ -78,14 +79,22 @@ while running:
         
     
         if e.type == pygame.KEYDOWN:
-            if e.key == pygame.K_q:
+            if e.key == pygame.K_l:
                 red_bullet.append(pygame.Rect(spaceship_Red_rect.x+75,spaceship_Red_rect.y+75,20,15))
-                
-                
+            if e.key == pygame.K_q:
+                 Yellow_bullet.append(pygame.Rect(spaceship_yellow_rect.x-75,spaceship_yellow_rect.y-75,20,15))
+        
+        if e.type == yellow_hit:
+            yellow_health -= 1
+            print("health has gone down")
     
     keys = pygame.key.get_pressed()
     if keys[pygame.K_q] and spaceship_yellow_rect.x - 10 > 0:
             spaceship_yellow_rect.x += 100
+    if keys[pygame.K_l] and spaceship_Red_rect.x - 10 > 0:
+            spaceship_Red_rect.x -= 100
+
+    
     
     for e in red_bullet:
         e.x += 5
@@ -94,16 +103,38 @@ while running:
             print("hg")
             pygame.event.post(pygame.event.Event(yellow_hit))
             red_bullet.remove(e)
-            yellow_health -= 1
+            
             print(yellow_health)
         elif e.x > 850:
             red_bullet.remove(e)
+    
+    for e in Yellow_bullet:
+        pygame.draw.rect(screen,"yellow",e)
+                
+    
+    
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_l] and spaceship_Red_rect.x - 10 > 0:
+            spaceship_Red_rect.x += 100
+    
+    for e in Yellow_bullet:
+        e.x += 5
         
+        pygame.draw.rect(screen,"red",e)
+        if e.colliderect(spaceship_Red_rect):
+            print("hg")
+            pygame.event.post(pygame.event.Event(red_hit))
+            Yellow_bullet.remove(e)
             
+            print(Red_health)
+        elif e.x > 850:
+            Yellow_bullet.remove(e)
+    if e.type == red_hit:
+        Red_health -= 1
+        print("health has gone down")
+               
     draw_window()
     pygame.display.update()
-
-    
 #   - background, border, health text, spaceships, bullets
 
 # Function to handle yellow spaceship movement within its bounds
