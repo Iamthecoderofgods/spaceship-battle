@@ -69,30 +69,37 @@ while running:
     screen.blit(Health_red,(20,20))
     screen.blit(spaceship_red,(0,100))
     screen.blit(spaceship_yellow,(700,100))
-    #
+    pygame.display.update()
     for e in red_bullet:
         pygame.draw.rect(screen,"red",e)
+    for e in Yellow_bullet:
+         pygame.draw.rect(screen,"yellow",e)
     
     for e in pygame.event.get():
         if e.type == pygame.QUIT:
             running = False
         
-    
+        
         if e.type == pygame.KEYDOWN:
-            if e.key == pygame.K_l:
-                red_bullet.append(pygame.Rect(spaceship_Red_rect.x+75,spaceship_Red_rect.y+75,20,15))
             if e.key == pygame.K_q:
-                 Yellow_bullet.append(pygame.Rect(spaceship_yellow_rect.x-75,spaceship_yellow_rect.y-75,20,15))
+                red_bullet.append(pygame.Rect(spaceship_Red_rect.x+75,spaceship_Red_rect.y+75,20,15))
+            if e.key == pygame.K_l:
+                 Yellow_bullet.append(pygame.Rect(spaceship_yellow_rect.x-75,spaceship_yellow_rect.y+75,20,15))
         
         if e.type == yellow_hit:
             yellow_health -= 1
+
+            print("health has gone down")
+        
+        if e.type == red_hit:
+            Red_health -= 1
             print("health has gone down")
     
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_q] and spaceship_yellow_rect.x - 10 > 0:
-            spaceship_yellow_rect.x += 100
-    if keys[pygame.K_l] and spaceship_Red_rect.x - 10 > 0:
-            spaceship_Red_rect.x -= 100
+    if keys[pygame.K_LEFT] and spaceship_yellow_rect.x - 10 > 0:
+            spaceship_yellow_rect.x -= 100
+    if keys[pygame.K_a] and spaceship_Red_rect.x - 10 > 0:
+            spaceship_Red_rect.x += 100
 
     
     
@@ -107,9 +114,19 @@ while running:
             print(yellow_health)
         elif e.x > 850:
             red_bullet.remove(e)
+        
     
     for e in Yellow_bullet:
+        e.x -= 5
         pygame.draw.rect(screen,"yellow",e)
+        if e.colliderect(spaceship_Red_rect):
+            print("hg")
+            pygame.event.post(pygame.event.Event(red_hit))
+            Yellow_bullet.remove(e)
+            
+            print(Red_health)
+        elif e.x < 0:
+            Yellow_bullet.remove(e)
                 
     
     
@@ -129,9 +146,8 @@ while running:
             print(Red_health)
         elif e.x > 850:
             Yellow_bullet.remove(e)
-    if e.type == red_hit:
-        Red_health -= 1
-        print("health has gone down")
+    
+    
                
     draw_window()
     pygame.display.update()
