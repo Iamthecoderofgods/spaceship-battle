@@ -56,24 +56,25 @@ Backround = pygame.image.load("images/space_backround.png")
 Backround_image1 = pygame.transform.scale(Backround,(850,850))
 
 def draw_window():
-    pass
-
-
-# Function to draw all game elements on the screen
-while running:
+    screen.blit(Backround_image1,(0,0))
     Health_yellow = font.render("Health:"+str(yellow_health),True,"White","black")
     Health_red = font.render("Health:"+str(Red_health),True,"white","black")
-    screen.blit(Backround_image1,(0,0))
-    pygame.draw.rect(screen,(0,0,0),border)
     screen.blit(Health_yellow,(670,20))
     screen.blit(Health_red,(20,20))
-    screen.blit(spaceship_red,(0,100))
-    screen.blit(spaceship_yellow,(700,100))
+    screen.blit(spaceship_red,spaceship_Red_rect)
+    screen.blit(spaceship_yellow,spaceship_yellow_rect)
+    
+    
+    pygame.draw.rect(screen,(0,0,0),border)
+    
     pygame.display.update()
     for e in red_bullet:
         pygame.draw.rect(screen,"red",e)
     for e in Yellow_bullet:
          pygame.draw.rect(screen,"yellow",e)
+# Function to draw all game elements on the screen
+while running:
+    
     
     for e in pygame.event.get():
         if e.type == pygame.QUIT:
@@ -87,20 +88,29 @@ while running:
                  Yellow_bullet.append(pygame.Rect(spaceship_yellow_rect.x-75,spaceship_yellow_rect.y+75,20,15))
         
         if e.type == yellow_hit:
+            print(yellow_hit)
             yellow_health -= 1
 
             print("health has gone down")
         
         if e.type == red_hit:
+            print(red_hit)
             Red_health -= 1
             print("health has gone down")
     
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT] and spaceship_yellow_rect.x - 10 > 0:
-            spaceship_yellow_rect.x -= 100
-    if keys[pygame.K_a] and spaceship_Red_rect.x - 10 > 0:
-            spaceship_Red_rect.x += 100
-
+    if keys[pygame.K_UP] and spaceship_yellow_rect.y - 10 > 0:
+            spaceship_yellow_rect.y -= 2
+    if keys[pygame.K_DOWN] and spaceship_yellow_rect.y + 10 > 0:
+         spaceship_yellow_rect.y +=2
+    if keys[pygame.K_LEFT] and spaceship_yellow_rect.x - 5 > 475:
+         spaceship_yellow_rect.x -=2
+    if keys[pygame.K_RIGHT] and spaceship_yellow_rect.x - 10 > 0:
+         spaceship_yellow_rect.x +=2
+    if keys[pygame.K_a] and spaceship_Red_rect.x - 10 < 0:
+            spaceship_Red_rect.x -= 2
+    if keys[pygame.K_d] and spaceship_Red_rect.x + 10 < 0:
+            spaceship_Red_rect.x += 2
     
     
     for e in red_bullet:
@@ -114,11 +124,12 @@ while running:
             print(yellow_health)
         elif e.x > 850:
             red_bullet.remove(e)
+        draw_window()
         
     
     for e in Yellow_bullet:
-        e.x -= 5
-        pygame.draw.rect(screen,"yellow",e)
+        e.x -= 2
+        #pygame.draw.rect(screen,"yellow",e)
         if e.colliderect(spaceship_Red_rect):
             print("hg")
             pygame.event.post(pygame.event.Event(red_hit))
@@ -127,24 +138,25 @@ while running:
             print(Red_health)
         elif e.x < 0:
             Yellow_bullet.remove(e)
+            draw_window()
                 
     
     
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_l] and spaceship_Red_rect.x - 10 > 0:
-            spaceship_Red_rect.x += 100
+    if keys[pygame.K_a] and spaceship_Red_rect.x - 10 > 0:
+            spaceship_Red_rect.x -= 100
     
     for e in Yellow_bullet:
-        e.x += 5
+        e.x -= 0.0001
         
-        pygame.draw.rect(screen,"red",e)
+        #pygame.draw.rect(screen,"yellow",e)
         if e.colliderect(spaceship_Red_rect):
             print("hg")
             pygame.event.post(pygame.event.Event(red_hit))
             Yellow_bullet.remove(e)
-            
+            draw_window()
             print(Red_health)
-        elif e.x > 850:
+        elif e.x < 0:
             Yellow_bullet.remove(e)
     
     
